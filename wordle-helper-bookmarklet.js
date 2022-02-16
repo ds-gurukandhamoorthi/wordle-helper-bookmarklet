@@ -5,7 +5,9 @@ alphs='abcdefghijklmnopqrstuvwxyz';
 allowed=[...alphs].filter(c=>lettersFeedback[c]!='absent').join('');
 cmd+=`|grep -v '[^${allowed}]'`
 mustBePresent=[...alphs].filter(c=>lettersFeedback[c]=='present').map(c=>`/${c}/`).join(' && ');
-cmd+=`|awk '${mustBePresent}'`
+if(mustBePresent.length > 0){
+    cmd+=`|awk '${mustBePresent}'`
+}
 let positionalConstraints=[];
 let forceCharAt=(ch, ind) => '/' + '.'.repeat(ind)+ch+'.'.repeat(5-ind-1) + '/';
 for(let i=0; i<6; i++){
@@ -18,5 +20,8 @@ for(let i=0; i<6; i++){
             positionalConstraints.push(forceCharAt(letrs.charAt(j), j)); //at this place
         }
     }
+}
+if(positionalConstraints.length > 0){
+    cmd+=`|awk '${positionalConstraints.join(" && ")}'`;
 }
 prompt('Copy paste in bash prompt',cmd);

@@ -6,6 +6,25 @@ const alphs='abcdefghijklmnopqrstuvwxyz';
 const lettersFeedback=document.getElementsByTagName('game-app')[0].$keyboard._letterEvaluations;
 let disallowed=[...alphs].filter(c=>lettersFeedback[c]=='absent');
 let mustBePresent=[...alphs].filter(c=>lettersFeedback[c]=='present');
+const positionalConstraints= w => {
+    for(let i=0; i<6; i++){
+        let feedback=document.getElementsByTagName('game-app')[0].$board.childNodes[i]._evaluation;
+        let letrs=document.getElementsByTagName('game-app')[0].$board.childNodes[i]._letters;
+        for (let j=0; j<letrs.length; j++){
+            if (feedback[j] == 'present'){
+                if(w.charAt(j)==letrs.charAt(j)){
+                    return false; //present but must not be in this position (at this index)
+                }
+            }else if(feedback[j] == 'correct'){
+                if(w.charAt(j)!=letrs.charAt(j)){
+                    return false; //must be present at this index
+                }
+            }
+        }
+    }
+    return true;
+};
 let shortlist=words.filter(w=>disallowed.every(c=>w.indexOf(c)==-1) &&
-                mustBePresent.every(c=>w.indexOf(c)!=-1));
+                mustBePresent.every(c=>w.indexOf(c)!=-1) &&
+            positionalConstraints(w));
 alert(shortlist.slice(0,5).join('\n'));

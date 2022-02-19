@@ -5,5 +5,7 @@ const words=de("aboutadapĄdoĈąoreąulĄfteragainęenĄgďĐhĐĆlarmalbuīli�
 const alphs='abcdefghijklmnopqrstuvwxyz';
 const lettersFeedback=document.getElementsByTagName('game-app')[0].$keyboard._letterEvaluations;
 let disallowed=[...alphs].filter(c=>lettersFeedback[c]=='absent');
-let shortlist=words.filter(w=>disallowed.every(c=>w.indexOf(c)==-1));
+let mustBePresent=[...alphs].filter(c=>lettersFeedback[c]=='present');
+let shortlist=words.filter(w=>disallowed.every(c=>w.indexOf(c)==-1) &&
+                mustBePresent.every(c=>w.indexOf(c)!=-1));
 alert(shortlist.slice(0,5).join('\n'));

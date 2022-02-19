@@ -27,4 +27,27 @@ const positionalConstraints= w => {
 let shortlist=words.filter(w=>disallowed.every(c=>w.indexOf(c)==-1) &&
                 mustBePresent.every(c=>w.indexOf(c)!=-1) &&
             positionalConstraints(w));
-alert(shortlist.slice(0,5).join('\n'));
+if (shortlist.length <= 2){
+    alert(shortlist.slice(0,5).join('\n'));
+}else{
+    let unknown=[...alphs].filter(c => !(c in lettersFeedback));
+    let dic = []; //nb words containing the character
+    unknown.forEach(ch => {
+        dic[ch] = shortlist.filter(w => w.indexOf(ch)!=-1).length;
+    });
+    unknown=unknown.sort(function(a,b) {return dic[b]-dic[a];});
+    let suggestions = words.filter(w => w.indexOf(unknown[0]) != -1 &&
+        w.indexOf(unknown[1]) != -1 &&
+        w.indexOf(unknown[2]) != -1 );
+    if (suggestions.length < 5){
+        suggestions = suggestions.concat(
+            (words.filter(w => w.indexOf(unknown[0])!=-1 &&
+                w.indexOf(unknown[1]) != -1 )) ||
+            (words.filter(w => w.indexOf(unknown[0])!=-1 &&
+                w.indexOf(unknown[2]) != -1 )) ||
+            (words.filter(w => w.indexOf(unknown[1])!=-1 &&
+                w.indexOf(unknown[2]) != -1 ))
+        );
+    }
+    alert(suggestions.slice(0,5).join('\n'));
+}

@@ -26,8 +26,8 @@ const positionalConstraints= w => {
     }
     return true;
 };
-let shortlist=words.filter(w=>disallowed.every(c=>w.indexOf(c)==-1) &&
-                mustBePresent.every(c=>w.indexOf(c)!=-1) &&
+let shortlist=words.filter(w=>disallowed.every(c=>!w.includes(c)) &&
+                mustBePresent.every(c=>w.includes(c)) &&
             positionalConstraints(w));
 if (shortlist.length <= 2){
     alert(shortlist.slice(0,5).join('\n'));
@@ -35,20 +35,20 @@ if (shortlist.length <= 2){
     let unknown=[...alphs].filter(c => !(disallowed.includes(c) || mustBePresent.includes(c)));
     let dic = []; //nb words containing the character
     unknown.forEach(ch => {
-        dic[ch] = shortlist.filter(w => w.indexOf(ch)!=-1).length;
+        dic[ch] = shortlist.filter(w => w.includes(ch)).length;
     });
     unknown=unknown.sort(function(a,b) {return dic[b]-dic[a];});
-    let suggestions = words.filter(w => w.indexOf(unknown[0]) != -1 &&
-        w.indexOf(unknown[1]) != -1 &&
-        w.indexOf(unknown[2]) != -1 );
+    let suggestions = words.filter(w => w.includes(unknown[0]) &&
+        w.includes(unknown[1]) &&
+        w.includes(unknown[2]));
     if (suggestions.length < 5){
         suggestions = suggestions.concat(
-            (words.filter(w => w.indexOf(unknown[0])!=-1 &&
-                w.indexOf(unknown[1]) != -1 )) ||
-            (words.filter(w => w.indexOf(unknown[0])!=-1 &&
-                w.indexOf(unknown[2]) != -1 )) ||
-            (words.filter(w => w.indexOf(unknown[1])!=-1 &&
-                w.indexOf(unknown[2]) != -1 ))
+            (words.filter(w => w.includes(unknown[0]) &&
+                w.includes(unknown[1]))) ||
+            (words.filter(w => w.includes(unknown[0]) &&
+                w.includes(unknown[2]))) ||
+            (words.filter(w => w.includes(unknown[1]) &&
+                w.includes(unknown[2])))
         );
     }
     alert(suggestions.slice(0,5).join('\n'));
